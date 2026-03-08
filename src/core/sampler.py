@@ -32,13 +32,19 @@ def parallel_sample(
     Returns:
         A list of *n_samples* LLM response objects.
     """
-    # Build a high-temperature copy of the LLM for diverse sampling
-    sampling_llm = ChatOpenAI(
-        model=base_llm.model_name,
-        api_key=base_llm.openai_api_key.get_secret_value(),
-        base_url=str(base_llm.openai_api_base),
-        temperature=temperature,
-    )
+    # Build a high-temperature copy of the LLM for diverse sampling.
+    # Only pass base_url when it is explicitly configured; str(None)
+    # would become "None" and produce an invalid request URL.
+    sampling_llm_kwargs = {
+        "model": base_llm.model_name,
+        "api_key": base_llm.openai_api_key.get_secret_value(),
+        "temperature": temperature,
+    }
+    openai_api_base = getattr(base_llm, "openai_api_base", None)
+    if openai_api_base is not None:
+        sampling_llm_kwargs["base_url"] = str(openai_api_base)
+
+    sampling_llm = ChatOpenAI(**sampling_llm_kwargs)
 
     # Propagate any tool bindings the base LLM already has
     if hasattr(base_llm, "kwargs") and "tools" in base_llm.kwargs:
@@ -47,3 +53,4 @@ def parallel_sample(
     # Run all paths in a single batched call
     batch_inputs = [messages] * n_samples
     return sampling_llm.batch(batch_inputs)
+
