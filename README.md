@@ -30,6 +30,32 @@ Key ideas:
 
 ---
 
+## Interactive Agent
+
+We provide a **LangGraph-powered interactive agent** that wraps the CoT-SC logic, allowing for a conversational interface with persistent system prompts defined in [AGENT.md](AGENT.md).
+
+![Interactive Agent Demo](docs/agent.png)
+
+### Features
+- **Conversational** — Maintains reasoning quality across multi-turn interactions.
+- **Customizable Prompt** — Centrally managed system instructions in `AGENT.md`.
+- **Streaming-like Output** — Progressive terminal display for a better UX.
+
+### How to Run
+
+Requires `.env` with: `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`, `COT_SC_SAMPLES`, `COT_SC_TEMP`.
+
+```bash
+# from project root
+python src/agent.py
+```
+
+```bash
+# standard script entrypoint
+uv run --with-editable . cot-sc-agent
+```
+---
+
 ## Benchmarks
 
 Evaluation on private dataset shows that CoT-SC significantly outperforms standard Chain-of-Thought (CoT) by reducing stochastic errors and improving logical consistency.
