@@ -16,6 +16,8 @@ Tie-breaking rules
 """
 
 from collections import Counter
+
+from ..utils.console import print_box
 from ..utils.fingerprint import compute_fingerprint
 
 
@@ -35,7 +37,7 @@ def aggregate_votes(candidates: list, log: bool = True):
 
     # --- Step 1: assign each response to a fingerprint bucket ----------
     keys = []
-    clusters = {}  # fingerprint → best representative response
+    clusters = {}  # fingerprint -> best representative response
 
     for resp in candidates:
         key = compute_fingerprint(resp)
@@ -52,18 +54,20 @@ def aggregate_votes(candidates: list, log: bool = True):
     total = len(candidates)
 
     if log:
-        breakdown = "  |  ".join(
-            f"{k[:40]!r}: {v}" for k, v in tally.most_common()
+        breakdown = "  |  ".join(f"{k[:40]!r}: {v}" for k, v in tally.most_common())
+        print_box(
+            [
+                f"[CoT-SC vote] {top_votes}/{total} -> {top_key[:50]!r}",
+                f"breakdown: {breakdown}",
+            ]
         )
-        print(f"[CoT-SC vote] {top_votes}/{total} → {top_key[:50]!r}")
-        print(f"  breakdown: {breakdown}")
 
     # --- Step 3: fallback when no strict majority ----------------------
     strict_majority = total // 2 + 1
     if top_votes < strict_majority:
         if "text" in clusters:
             if log:
-                print("[CoT-SC vote] no clear majority — using plain-text fallback")
+                print_box("[CoT-SC vote] no clear majority - using plain-text fallback")
             return clusters["text"]
 
     return clusters[top_key]
