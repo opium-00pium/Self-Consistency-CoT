@@ -1,4 +1,6 @@
-# Chain-of-Thought Self-Consistency for LLM Agents
+<div align="center">
+  <h1>🧠 Chain-of-Thought Self-Consistency for LLM Agents 🧠</h1>
+</div>
 
 A lightweight, plug-and-play **implementation** of **Chain-of-Thought Self-Consistency** (CoT-SC) that provides a faithful **replication** of the original paper's logic for any **LLM API**.
 
